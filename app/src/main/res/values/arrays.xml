@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="urls_choice">
+        <item>popular</item>
+        <item>top_rated</item>
+        <item>upcoming</item>
+        <item>favorites</item>
+    </array>
+
+    <array name="order_items">
+        <item>Popular</item>
+        <item>Top Rated</item>
+        <item>Upcoming</item>
+        <item>Favorites</item>
+    </array>
+</resources>

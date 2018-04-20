@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_text">15sp</dimen>
+    <dimen name="medium_text">20sp</dimen>
+    <dimen name="big_text">25sp</dimen>
+    <dimen name="small_margin">5dp</dimen>
+    <dimen name="medium_margin">15dp</dimen>
+    <dimen name="poster_height">200dp</dimen>
+</resources>

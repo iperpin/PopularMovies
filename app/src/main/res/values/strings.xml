@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="no_internet">No internet connexion.\nSwipe down to retry </string>
+    <string name="posterImagePath" translatable="false">http://image.tmdb.org/t/p/w185</string>
+    <string name="headerImagePath" translatable="false">http://image.tmdb.org/t/p/w342</string>
+    <string name="url_base" translatable="false">http://api.themoviedb.org/3/movie/</string>
+    <string name="api_key_tag" translatable="false">\u003Fapi_key\u003D</string>
+    <string name="api_key" translatable="false">9ed28153cde79670520a66bf9f912e2f</string>
+    <string name="intent_movie_object" translatable="false">MovieObjectIntent</string>
+    <string name="intent_movie_reviews" translatable="false">MovieReviews</string>
+    <string name="intent_movie_trailers" translatable="false">MovieTrailers</string>
+    <string name="intent_movie_desc" translatable="false">MovieDescription</string>
+    <string name="spinner_position" translatable="false">SpinnerPosition</string>
+    <string name="divide_ten" translatable="false">\u0020/ 10</string>
+</resources>
