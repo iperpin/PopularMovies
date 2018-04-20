@@ -112,7 +112,7 @@ public class DetailMovieActivity extends AppCompatActivity {
                         public void run() {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(getString(R.string.intent_movie_reviews), movieReviews);
-                            revFragment.setArguments(bundle);
+                            revFragment.putArguments(bundle);
                         }
                     });
                 } else if (type.equalsIgnoreCase("trailer")) {
@@ -122,7 +122,7 @@ public class DetailMovieActivity extends AppCompatActivity {
                         public void run() {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(getString(R.string.intent_movie_trailers), movieTrailers);
-                            trailersFragment.setArguments(bundle);
+                            trailersFragment.putArguments(bundle);
                         }
                     });
                 }

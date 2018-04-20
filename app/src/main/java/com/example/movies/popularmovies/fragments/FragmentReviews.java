@@ -55,6 +55,9 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     }
 
     public void putArguments(Bundle arguments){
+//        if(isAdded()){
+//            return;
+//        }
         if (arguments != null && arguments.getParcelable(getString(R.string.intent_movie_reviews))!=null){
             movieReview = arguments.getParcelable(getString(R.string.intent_movie_reviews));
             if (movieReview != null) {
