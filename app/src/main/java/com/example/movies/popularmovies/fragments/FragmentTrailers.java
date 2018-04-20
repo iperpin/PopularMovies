@@ -59,7 +59,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     }
 
     public void putArguments(Bundle arguments){
-//        if(isAdded()){
+//        if(!isAdded()){
 //            return;
 //        }
         if (arguments != null && arguments.getParcelable(getString(R.string.intent_movie_trailers))!=null) {
