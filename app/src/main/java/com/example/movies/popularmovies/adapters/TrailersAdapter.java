@@ -1,6 +1,7 @@
 package com.example.movies.popularmovies.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,9 @@ import java.util.List;
 public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.TrailersViewHolder> {
 
     private static final String LOG_TAG = "ReviewAdapter";
+    private static final String TRAILERS_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi/";
     private ListItemClickListener mOnClickListener;
     private List<Youtube> trailers;
-
-    private static final String TRAILERS_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi/";
 
     public TrailersAdapter() {
         trailers = new ArrayList<>();
@@ -51,7 +51,12 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         String name = trailers.get(position).getName();
         String comment = trailers.get(position).getName();
         holder.videoName.setText(name);
-        Picasso.with(holder.videoIm.getContext()).load(TRAILERS_THUMBNAIL_BASE_URL+trailers.get(position).getSource()+"/0.jpg")
+        Drawable placeholder = holder.videoName.getContext().getResources().getDrawable(R.drawable.image);
+        Drawable error = holder.videoName.getContext().getResources().getDrawable(R.drawable.cancel);
+        Picasso.with(holder.videoIm.getContext())
+                .load(TRAILERS_THUMBNAIL_BASE_URL + trailers.get(position).getSource() + "/0.jpg")
+                .placeholder(placeholder)
+                .error(error)
                 .into(holder.videoIm);
     }
 

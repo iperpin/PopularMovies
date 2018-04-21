@@ -2,6 +2,7 @@ package com.example.movies.popularmovies.fragments;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -73,19 +74,31 @@ public class FragmentDescription extends Fragment {
             Log.d(LOG_TAG, "Is in DB: " + isInFavorites);
             if (isInFavorites) {
                 fabButton.setImageResource(R.drawable.star_red);
-            }else{
+            } else {
                 fabButton.setImageResource(R.drawable.star);
             }
 
 
             if (movieObject.getBackdropPath() != null) {
-                Picasso.with(view.getContext()).load(getString(R.string.headerImagePath) + movieObject.getBackdropPath()).into(headerImageView);
+                Drawable placeholder = view.getContext().getResources().getDrawable(R.drawable.image);
+                Drawable error = view.getContext().getResources().getDrawable(R.drawable.cancel);
+                Picasso.with(view.getContext())
+                        .load(getString(R.string.headerImagePath) + movieObject.getBackdropPath())
+                        .placeholder(placeholder)
+                        .error(error)
+                        .into(headerImageView);
             }
 
             titleTextView.setText(movieObject.getTitle());
 
             if (movieObject.getPosterPath() != null) {
-                Picasso.with(view.getContext()).load(getString(R.string.posterImagePath) + movieObject.getPosterPath()).into(posterImageView);
+                Drawable placeholder = view.getContext().getResources().getDrawable(R.drawable.image);
+                Drawable error = view.getContext().getResources().getDrawable(R.drawable.cancel);
+                Picasso.with(view.getContext())
+                        .load(getString(R.string.posterImagePath) + movieObject.getPosterPath())
+                        .placeholder(placeholder)
+                        .error(error)
+                        .into(posterImageView);
             }
 
             if (movieObject.getReleaseDate() != null) {

@@ -1,6 +1,7 @@
 package com.example.movies.popularmovies.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         String dataMovie = movies.get(position).getPosterPath();
         String posterPath = holder.movieIm.getContext().getString(R.string.posterImagePath);
         String completePath = posterPath + dataMovie;
-        Picasso.with(holder.movieIm.getContext()).load(completePath).into(holder.movieIm);
+        Drawable placeholder = holder.movieIm.getResources().getDrawable(R.drawable.image);
+        Drawable error = holder.movieIm.getResources().getDrawable(R.drawable.cancel);
+        Picasso.with(holder.movieIm.getContext())
+                .load(completePath)
+                .placeholder(placeholder)
+                .error(error)
+                .into(holder.movieIm);
     }
 
 
