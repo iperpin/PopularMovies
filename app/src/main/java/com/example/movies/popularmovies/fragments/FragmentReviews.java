@@ -108,7 +108,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     public void putArguments(MovieReview movieReview) {
 
         if (movieReview != null) {
-            if (movieReview.getResults().size() == 0) {
+            if (movieReview.getResults()==null || movieReview.getResults().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_reviews));
                 noInternetTextView.setVisibility(View.VISIBLE);
             }

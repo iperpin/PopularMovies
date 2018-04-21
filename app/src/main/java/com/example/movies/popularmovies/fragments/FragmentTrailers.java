@@ -109,7 +109,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
 
     public void putArguments(MovieTrailer movieTrailer) {
         if (movieTrailer != null) {
-            if (movieTrailer.getResults().size() == 0) {
+            if (movieTrailer.getResults()==null || movieTrailer.getResults().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_trailers));
                 noInternetTextView.setVisibility(View.VISIBLE);
             }
