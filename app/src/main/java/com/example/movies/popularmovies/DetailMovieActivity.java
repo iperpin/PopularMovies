@@ -31,18 +31,6 @@ public class DetailMovieActivity extends AppCompatActivity {
     private FragmentReviews revFragment;
     private FragmentTrailers trailersFragment;
     private FragmentDescription descFragment;
-    private MovieReview movieReviews;
-    private MovieTrailer movieTrailers;
-
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.d(LOG_TAG, "OnSaved");
-        outState.putParcelable("movie_reviews", movieReviews);
-        outState.putParcelable("movie_trailes", movieTrailers);
-
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +39,6 @@ public class DetailMovieActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         MovieObject movieObject = i.getParcelableExtra(getString(R.string.intent_movie_object));
-        //Log.d(LOG_TAG, movieObject.toString());
 
         ViewPager viewPager = findViewById(R.id.pager);
 
@@ -59,14 +46,17 @@ public class DetailMovieActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.intent_movie_desc), movieObject);
+
         descFragment = new FragmentDescription();
         descFragment.setArguments(bundle);
         adapter.addFragment(descFragment, "Description");
 
         revFragment = new FragmentReviews();
+        revFragment.setArguments(bundle);
         adapter.addFragment(revFragment, "Reviews");
 
         trailersFragment = new FragmentTrailers();
+        trailersFragment.setArguments(bundle);
         adapter.addFragment(trailersFragment, "Trailers");
 
         viewPager.setAdapter(adapter);
@@ -77,57 +67,6 @@ public class DetailMovieActivity extends AppCompatActivity {
         if (movieObject != null) {
             String title = movieObject.getTitle() != null ? movieObject.getTitle() : "";
             setTitle(title);
-
-            request((getString(R.string.url_base) + movieObject.getId() + "/reviews"
-                    + getString(R.string.api_key_tag) + getString(R.string.api_key)), "review");
-            request((getString(R.string.url_base) + movieObject.getId() + "/videos"
-                    + getString(R.string.api_key_tag) + getString(R.string.api_key)), "trailer");
         }
     }
-
-    public void request(String url, final String type) {
-        Log.d(LOG_TAG, "New petition to: " + url);
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(url).build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                DetailMovieActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                String bodyResponse = response.body().string();
-
-                if (type.equalsIgnoreCase("review")) {
-                    movieReviews = Utils.parseReviewsJSON(bodyResponse);
-                    DetailMovieActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(getString(R.string.intent_movie_reviews), movieReviews);
-                            revFragment.putArguments(bundle);
-                        }
-                    });
-                } else if (type.equalsIgnoreCase("trailer")) {
-                    movieTrailers = Utils.parseTrailersJSON(bodyResponse);
-                    DetailMovieActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelable(getString(R.string.intent_movie_trailers), movieTrailers);
-                            trailersFragment.putArguments(bundle);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
 }
