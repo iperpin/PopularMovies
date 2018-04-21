@@ -122,6 +122,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     }
 
     public void request(String url) {
+        Log.d(LOG_TAG, "New petition to: " + url);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 

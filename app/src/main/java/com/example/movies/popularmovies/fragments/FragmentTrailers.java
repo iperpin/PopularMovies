@@ -20,7 +20,7 @@ import com.example.movies.popularmovies.Utils;
 import com.example.movies.popularmovies.adapters.TrailersAdapter;
 import com.example.movies.popularmovies.objects.MovieObject;
 import com.example.movies.popularmovies.objects.MovieTrailer;
-import com.example.movies.popularmovies.objects.MovieTrailerResult;
+import com.example.movies.popularmovies.objects.Youtube;
 
 import java.io.IOException;
 
@@ -109,7 +109,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
 
     public void putArguments(MovieTrailer movieTrailer) {
         if (movieTrailer != null) {
-            if (movieTrailer.getResults()==null || movieTrailer.getResults().size() == 0) {
+            if (movieTrailer.getYoutube()==null || movieTrailer.getYoutube().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_trailers));
                 noInternetTextView.setVisibility(View.VISIBLE);
             }
@@ -118,7 +118,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     }
 
     private void updateTrailers(MovieTrailer trailers) {
-        adapter.update(trailers.getResults());
+        adapter.update(trailers.getYoutube());
     }
 
     public void request(String url) {
@@ -147,6 +147,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                     @Override
                     public void run() {
                         noInternetTextView.setVisibility(View.INVISIBLE);
+                        Log.d(LOG_TAG,movieTrailer.toString());
                         putArguments(movieTrailer);
                     }
                 });
@@ -156,8 +157,8 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex, MovieTrailerResult movie) {
-        goToYoutube(movie.getKey());
+    public void onListItemClick(int clickedItemIndex, Youtube movie) {
+        goToYoutube(movie.getSource());
     }
 
     private void goToYoutube(String id) {

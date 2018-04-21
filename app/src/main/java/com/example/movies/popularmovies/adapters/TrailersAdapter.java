@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.movies.popularmovies.R;
-import com.example.movies.popularmovies.objects.MovieTrailerResult;
+import com.example.movies.popularmovies.objects.Youtube;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
 
     private static final String LOG_TAG = "ReviewAdapter";
     private ListItemClickListener mOnClickListener;
-    private List<MovieTrailerResult> trailers;
+    private List<Youtube> trailers;
 
     private static final String TRAILERS_THUMBNAIL_BASE_URL = "https://img.youtube.com/vi/";
 
@@ -49,9 +49,9 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
     @Override
     public void onBindViewHolder(TrailersViewHolder holder, int position) {
         String name = trailers.get(position).getName();
-        String comment = trailers.get(position).getId();
+        String comment = trailers.get(position).getName();
         holder.videoName.setText(name);
-        Picasso.with(holder.videoIm.getContext()).load(TRAILERS_THUMBNAIL_BASE_URL+trailers.get(position).getKey()+"/0.jpg")
+        Picasso.with(holder.videoIm.getContext()).load(TRAILERS_THUMBNAIL_BASE_URL+trailers.get(position).getSource()+"/0.jpg")
                 .into(holder.videoIm);
     }
 
@@ -62,7 +62,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
     }
 
 
-    public void update(List<MovieTrailerResult> items) {
+    public void update(List<Youtube> items) {
         if (items != null && items.size() > 0) {
             trailers.clear();
             trailers.addAll(items);
@@ -76,7 +76,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
     }
 
     public interface ListItemClickListener {
-        void onListItemClick(int clickedItemIndex, MovieTrailerResult movie);
+        void onListItemClick(int clickedItemIndex, Youtube movie);
     }
 
     class TrailersViewHolder extends RecyclerView.ViewHolder
@@ -96,7 +96,7 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
             if (clickedPosition != RecyclerView.NO_POSITION) {
-                MovieTrailerResult movie = trailers.get(clickedPosition);
+                Youtube movie = trailers.get(clickedPosition);
                 mOnClickListener.onListItemClick(clickedPosition, movie);
             }
 
