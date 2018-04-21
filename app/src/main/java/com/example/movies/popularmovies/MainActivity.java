@@ -63,14 +63,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         });
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-
-//        if (adapter.getMovies() != null) {
-//            outState.putParcelableArrayList(getString(R.string.saved_movies), new ArrayList<MovieObject>(adapter.getMovies()));
-//        }
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     protected void onResume() {
