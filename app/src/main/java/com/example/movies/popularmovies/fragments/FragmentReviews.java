@@ -3,12 +3,14 @@ package com.example.movies.popularmovies.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.movies.popularmovies.R;
 import com.example.movies.popularmovies.Utils;
@@ -32,6 +34,8 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     private MovieObject movieObject;
     private ReviewAdapter adapter;
     private RecyclerView recyclerView;
+    private TextView noInternetTextView;
+    private SwipeRefreshLayout swipeLayout;
 
 
     public FragmentReviews() {
@@ -45,6 +49,9 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
                 R.layout.fragment_detail_movie_reviews, container, false);
 
         recyclerView = view.findViewById(R.id.rvReviews);
+        swipeLayout = view.findViewById(R.id.swipe_layout);
+        noInternetTextView = view.findViewById(R.id.tv_no_internet);
+        noInternetTextView.setVisibility(View.INVISIBLE);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 1));
         adapter = new ReviewAdapter();
@@ -57,21 +64,38 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
             movieObject = getArguments().getParcelable(getString(R.string.intent_movie_desc));
         }
 
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
+
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        refreshItems();
+    }
 
+
+    private void refreshItems() {
         request((getString(R.string.url_base) + movieObject.getId() + "/reviews"
                 + getString(R.string.api_key_tag) + getString(R.string.api_key)));
+        swipeLayout.setRefreshing(false);
     }
 
     public void putArguments(MovieReview movieReview) {
 
         if (movieReview != null) {
+            if (movieReview.getResults().size()==0){
+                noInternetTextView.setText(getString(R.string.no_reviews));
+                noInternetTextView.setVisibility(View.VISIBLE);
+            }
             adapter.update(movieReview.getResults());
+
         }
     }
 
@@ -85,7 +109,8 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        noInternetTextView.setText(getString(R.string.no_internet));
+                        noInternetTextView.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -98,6 +123,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        noInternetTextView.setVisibility(View.INVISIBLE);
                         putArguments(movieReview);
                     }
                 });

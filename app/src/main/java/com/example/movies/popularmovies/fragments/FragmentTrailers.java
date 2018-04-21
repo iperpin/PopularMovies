@@ -6,12 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.movies.popularmovies.R;
 import com.example.movies.popularmovies.Utils;
@@ -35,6 +37,8 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     private MovieObject movieObject;
     private TrailersAdapter adapter;
     private RecyclerView recyclerView;
+    private TextView noInternetTextView;
+    private SwipeRefreshLayout swipeLayout;
 
 
     public FragmentTrailers() {
@@ -49,6 +53,9 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                 R.layout.fragment_detail_movie_trailers, container, false);
 
         recyclerView = view.findViewById(R.id.rvTrailers);
+        swipeLayout = view.findViewById(R.id.swipe_layout);
+        noInternetTextView = view.findViewById(R.id.tv_no_internet);
+        noInternetTextView.setVisibility(View.INVISIBLE);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 1));
         adapter = new TrailersAdapter();
@@ -60,22 +67,37 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
             movieObject = getArguments().getParcelable(getString(R.string.intent_movie_desc));
         }
 
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
+
         return view;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        refreshItems();
+    }
+
+    private void refreshItems() {
         request((getString(R.string.url_base) + movieObject.getId() + "/videos"
                 + getString(R.string.api_key_tag) + getString(R.string.api_key)));
+        swipeLayout.setRefreshing(false);
     }
 
     public void putArguments(MovieTrailer movieTrailer) {
         if (movieTrailer != null) {
-            Log.d(LOG_TAG, "put argument trailer not null");
+            if (movieTrailer.getResults().size()==0){
+                noInternetTextView.setText(getString(R.string.no_trailers));
+                noInternetTextView.setVisibility(View.VISIBLE);
+            }
             adapter.update(movieTrailer.getResults());
         }
-
     }
 
     public void request(String url) {
@@ -89,7 +111,8 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        noInternetTextView.setText(getString(R.string.no_internet));
+                        noInternetTextView.setVisibility(View.VISIBLE);
                     }
                 });
             }
@@ -102,6 +125,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        noInternetTextView.setVisibility(View.INVISIBLE);
                         putArguments(movieTrailer);
                     }
                 });

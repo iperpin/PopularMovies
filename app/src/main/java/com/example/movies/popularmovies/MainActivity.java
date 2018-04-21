@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         swipeLayout = findViewById(R.id.swipe_layout);
         recyclerView = findViewById(R.id.rvMovies);
         noInternetTextView = findViewById(R.id.tv_no_internet);
-
         noInternetTextView.setVisibility(View.INVISIBLE);
 
         recyclerView.setHasFixedSize(true);
