@@ -2,6 +2,7 @@ package com.example.movies.popularmovies;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 
 import com.example.movies.popularmovies.objects.MovieObject;
@@ -10,6 +11,8 @@ import com.example.movies.popularmovies.objects.MovieReview;
 import com.example.movies.popularmovies.objects.MovieTrailer;
 import com.google.gson.Gson;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 
 public class Utils {
@@ -58,5 +61,11 @@ public class Utils {
         String[] urlChoiceArray = context.getResources().getStringArray(R.array.urls_choice);
         String urlChoice = urlChoiceArray[index];
         return urlChoice;
+    }
+
+
+    public static boolean isNetworkAvailable(Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }

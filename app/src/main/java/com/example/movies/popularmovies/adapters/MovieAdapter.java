@@ -75,6 +75,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
+    public List<MovieObject> getMovies() {
+        return movies;
+    }
+
     public interface ListItemClickListener {
         void onListItemClick(int clickedItemIndex, MovieObject movie);
     }

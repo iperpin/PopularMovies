@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.movies.popularmovies.BuildConfig;
 import com.example.movies.popularmovies.R;
 import com.example.movies.popularmovies.Utils;
 import com.example.movies.popularmovies.adapters.TrailersAdapter;
@@ -102,23 +103,35 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     }
 
     private void requestItems() {
-        request((getString(R.string.url_base) + movieObject.getId() + "/" + getString(R.string.trailers_tag)
-                + getString(R.string.api_key_tag) + getString(R.string.api_key)));
+        if (Utils.isNetworkAvailable(getContext())) {
+            request((getString(R.string.url_base) + movieObject.getId() + "/" + getString(R.string.trailers_tag)
+                    + getString(R.string.api_key_tag) + BuildConfig.MY_MOVIE_API_KEY));
+        } else {
+            setNoInternetTextView();
+        }
         swipeLayout.setRefreshing(false);
     }
 
     public void putArguments(MovieTrailer movieTrailer) {
         if (movieTrailer != null) {
-            if (movieTrailer.getYoutube()==null || movieTrailer.getYoutube().size() == 0) {
+            if (movieTrailer.getYoutube() == null || movieTrailer.getYoutube().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_trailers));
                 noInternetTextView.setVisibility(View.VISIBLE);
+            } else {
+                updateTrailers(movieTrailer);
             }
-            updateTrailers(movieTrailer);
         }
     }
 
     private void updateTrailers(MovieTrailer trailers) {
+        if (trailers == null) {
+            return;
+        }
+        if (trailers.getYoutube() == null) {
+            return;
+        }
         adapter.update(trailers.getYoutube());
+
     }
 
     public void request(String url) {
@@ -132,8 +145,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        noInternetTextView.setText(getString(R.string.no_internet));
-                        noInternetTextView.setVisibility(View.VISIBLE);
+                        setNoInternetTextView();
                     }
                 });
             }
@@ -147,13 +159,19 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                     @Override
                     public void run() {
                         noInternetTextView.setVisibility(View.INVISIBLE);
-                        Log.d(LOG_TAG,movieTrailer.toString());
+                        Log.d(LOG_TAG, movieTrailer.toString());
                         putArguments(movieTrailer);
                     }
                 });
             }
 
         });
+    }
+
+    private void setNoInternetTextView() {
+        adapter.clear();
+        noInternetTextView.setText(getString(R.string.no_internet));
+        noInternetTextView.setVisibility(View.VISIBLE);
     }
 
     @Override

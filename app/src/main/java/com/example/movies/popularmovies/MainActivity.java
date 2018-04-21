@@ -64,6 +64,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+//        if (adapter.getMovies() != null) {
+//            outState.putParcelableArrayList(getString(R.string.saved_movies), new ArrayList<MovieObject>(adapter.getMovies()));
+//        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         refreshItems();
@@ -80,8 +89,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        adapter.clear();
-                        noInternetTextView.setVisibility(View.VISIBLE);
+                        setNoInternetTextView();
                     }
                 });
             }
@@ -110,14 +118,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     }
 
     private void refreshItems() {
-        if (Utils.LoadPreferencesInt(MainActivity.this, getString(R.string.spinner_position), 0)==3){
+
+        if (Utils.LoadPreferencesInt(MainActivity.this, getString(R.string.spinner_position), 0) == 3) {
             fetchFavoriteMovies();
-        }else {
-            requestMovies(getString(R.string.url_base) + Utils.getUrlSpinnerChoice(MainActivity.this)
-                    + getString(R.string.api_key_tag) + getString(R.string.api_key));
+        } else {
+            if (Utils.isNetworkAvailable(this)) {
+                requestMovies(getString(R.string.url_base) + Utils.getUrlSpinnerChoice(MainActivity.this)
+                        + getString(R.string.api_key_tag) + BuildConfig.MY_MOVIE_API_KEY);
+            } else {
+                setNoInternetTextView();
+            }
         }
         swipeLayout.setRefreshing(false);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -137,16 +151,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-
-                Log.d(LOG_TAG, "Request Position: " + position);
-                if (position != 3) {
-                    requestMovies(getString(R.string.url_base) + Utils.getUrlChoice(MainActivity.this, position)
-                            + getString(R.string.api_key_tag) + getString(R.string.api_key));
-                } else {
-                    fetchFavoriteMovies();
-                }
-
                 Utils.savePrefsInt(MainActivity.this, getString(R.string.spinner_position), position);
+                refreshItems();
             }
 
             @Override
@@ -155,6 +161,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         });
         return true;
+    }
+
+    private void setNoInternetTextView() {
+        adapter.clear();
+        noInternetTextView.setText(getString(R.string.no_internet));
+        noInternetTextView.setVisibility(View.VISIBLE);
     }
 
     private void fetchFavoriteMovies() {

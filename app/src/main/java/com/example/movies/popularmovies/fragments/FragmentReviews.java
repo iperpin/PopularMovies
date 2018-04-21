@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.movies.popularmovies.BuildConfig;
 import com.example.movies.popularmovies.R;
 import com.example.movies.popularmovies.Utils;
 import com.example.movies.popularmovies.adapters.ReviewAdapter;
@@ -89,35 +90,47 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG,"Load saved reviews");
+            Log.d(LOG_TAG, "Load saved reviews");
             movieReview = savedInstanceState.getParcelable(getString(R.string.saved_review));
             updateReviews(movieReview);
         } else {
-            Log.d(LOG_TAG,"Go to internet to fetch reviews");
+            Log.d(LOG_TAG, "Go to internet to fetch reviews");
             requestItems();
         }
     }
 
 
     private void requestItems() {
-        request((getString(R.string.url_base) + movieObject.getId() + "/"+getString(R.string.reviews_tag)
-                + getString(R.string.api_key_tag) + getString(R.string.api_key)));
+        if (Utils.isNetworkAvailable(getContext())) {
+            request((getString(R.string.url_base) + movieObject.getId() + "/" + getString(R.string.reviews_tag)
+                    + getString(R.string.api_key_tag) + BuildConfig.MY_MOVIE_API_KEY));
+        } else {
+            setNoInternetTextView();
+        }
+
         swipeLayout.setRefreshing(false);
     }
 
     public void putArguments(MovieReview movieReview) {
 
         if (movieReview != null) {
-            if (movieReview.getResults()==null || movieReview.getResults().size() == 0) {
+            if (movieReview.getResults() == null || movieReview.getResults().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_reviews));
                 noInternetTextView.setVisibility(View.VISIBLE);
+            }else {
+                updateReviews(movieReview);
             }
-            updateReviews(movieReview);
         }
     }
 
 
     private void updateReviews(MovieReview reviews) {
+        if (reviews == null) {
+            return;
+        }
+        if (reviews.getResults() == null) {
+            return;
+        }
         adapter.update(reviews.getResults());
     }
 
@@ -132,8 +145,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        noInternetTextView.setText(getString(R.string.no_internet));
-                        noInternetTextView.setVisibility(View.VISIBLE);
+                        setNoInternetTextView();
                     }
                 });
             }
@@ -153,6 +165,12 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
             }
 
         });
+    }
+
+    private void setNoInternetTextView() {
+        adapter.clear();
+        noInternetTextView.setText(getString(R.string.no_internet));
+        noInternetTextView.setVisibility(View.VISIBLE);
     }
 
     @Override
