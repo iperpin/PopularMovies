@@ -92,17 +92,17 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG,"Load saved trailers");
+            Log.d(LOG_TAG, "Load saved trailers");
             movieTrailer = savedInstanceState.getParcelable(getString(R.string.saved_trailers));
             updateTrailers(movieTrailer);
         } else {
-            Log.d(LOG_TAG,"Go to internet to fetch trailers");
+            Log.d(LOG_TAG, "Go to internet to fetch trailers");
             requestItems();
         }
     }
 
     private void requestItems() {
-        request((getString(R.string.url_base) + movieObject.getId() + "/videos"
+        request((getString(R.string.url_base) + movieObject.getId() + "/" + getString(R.string.trailers_tag)
                 + getString(R.string.api_key_tag) + getString(R.string.api_key)));
         swipeLayout.setRefreshing(false);
     }
@@ -117,7 +117,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
         }
     }
 
-    private void updateTrailers(MovieTrailer trailers){
+    private void updateTrailers(MovieTrailer trailers) {
         adapter.update(trailers.getResults());
     }
 

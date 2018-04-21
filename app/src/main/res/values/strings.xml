@@ -3,6 +3,11 @@
     <string name="no_internet">No internet connexion.\nSwipe down to retry </string>
     <string name="no_reviews">No reviews</string>
     <string name="no_trailers">No trailers</string>
+    <string name="description">Description</string>
+    <string name="reviews">Reviews</string>
+    <string name="trailers">Trailers</string>
+    <string name="reviews_tag" translatable="false">reviews</string>
+    <string name="trailers_tag" translatable="false">trailers</string>
     <string name="posterImagePath" translatable="false">http://image.tmdb.org/t/p/w185</string>
     <string name="headerImagePath" translatable="false">http://image.tmdb.org/t/p/w342</string>
     <string name="url_base" translatable="false">http://api.themoviedb.org/3/movie/</string>

@@ -100,7 +100,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
 
 
     private void requestItems() {
-        request((getString(R.string.url_base) + movieObject.getId() + "/reviews"
+        request((getString(R.string.url_base) + movieObject.getId() + "/"+getString(R.string.reviews_tag)
                 + getString(R.string.api_key_tag) + getString(R.string.api_key)));
         swipeLayout.setRefreshing(false);
     }

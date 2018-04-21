@@ -50,15 +50,15 @@ public class DetailMovieActivity extends AppCompatActivity {
 
         descFragment = new FragmentDescription();
         descFragment.setArguments(bundle);
-        adapter.addFragment(descFragment, "Description");
+        adapter.addFragment(descFragment, getString(R.string.description));
 
         revFragment = new FragmentReviews();
         revFragment.setArguments(bundle);
-        adapter.addFragment(revFragment, "Reviews");
+        adapter.addFragment(revFragment, getString(R.string.reviews));
 
         trailersFragment = new FragmentTrailers();
         trailersFragment.setArguments(bundle);
-        adapter.addFragment(trailersFragment, "Trailers");
+        adapter.addFragment(trailersFragment, getString(R.string.trailers));
 
         viewPager.setAdapter(adapter);
 
