@@ -25,7 +25,7 @@ import okhttp3.Response;
 
 public class DetailMovieActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = "DetailMovie";
+    private static final String LOG_TAG = "DetailMovieActivity";
 
     ViewPagerAdapter adapter;
     private FragmentReviews revFragment;
@@ -35,6 +35,7 @@ public class DetailMovieActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_detail_movie);
 
         Intent i = getIntent();

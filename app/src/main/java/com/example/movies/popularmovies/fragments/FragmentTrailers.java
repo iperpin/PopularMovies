@@ -39,20 +39,29 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     private RecyclerView recyclerView;
     private TextView noInternetTextView;
     private SwipeRefreshLayout swipeLayout;
+    private MovieTrailer movieTrailer;
 
 
     public FragmentTrailers() {
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        if (movieTrailer != null) {
+            outState.putParcelable(getString(R.string.saved_trailers), movieTrailer);
+        }
+        super.onSaveInstanceState(outState);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(
-                R.layout.fragment_detail_movie_trailers, container, false);
+                R.layout.fragment_detail_movie_recyclerview, container, false);
 
-        recyclerView = view.findViewById(R.id.rvTrailers);
+        recyclerView = view.findViewById(R.id.rv);
         swipeLayout = view.findViewById(R.id.swipe_layout);
         noInternetTextView = view.findViewById(R.id.tv_no_internet);
         noInternetTextView.setVisibility(View.INVISIBLE);
@@ -70,7 +79,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshItems();
+                requestItems();
             }
         });
 
@@ -81,10 +90,18 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshItems();
+
+        if (savedInstanceState != null) {
+            Log.d(LOG_TAG,"Load saved trailers");
+            movieTrailer = savedInstanceState.getParcelable(getString(R.string.saved_trailers));
+            updateTrailers(movieTrailer);
+        } else {
+            Log.d(LOG_TAG,"Go to internet to fetch trailers");
+            requestItems();
+        }
     }
 
-    private void refreshItems() {
+    private void requestItems() {
         request((getString(R.string.url_base) + movieObject.getId() + "/videos"
                 + getString(R.string.api_key_tag) + getString(R.string.api_key)));
         swipeLayout.setRefreshing(false);
@@ -92,12 +109,16 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
 
     public void putArguments(MovieTrailer movieTrailer) {
         if (movieTrailer != null) {
-            if (movieTrailer.getResults().size()==0){
+            if (movieTrailer.getResults().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_trailers));
                 noInternetTextView.setVisibility(View.VISIBLE);
             }
-            adapter.update(movieTrailer.getResults());
+            updateTrailers(movieTrailer);
         }
+    }
+
+    private void updateTrailers(MovieTrailer trailers){
+        adapter.update(trailers.getResults());
     }
 
     public void request(String url) {
@@ -121,7 +142,7 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
             public void onResponse(Call call, final Response response) throws IOException {
                 String bodyResponse = response.body().string();
 
-                final MovieTrailer movieTrailer = Utils.parseTrailersJSON(bodyResponse);
+                movieTrailer = Utils.parseTrailersJSON(bodyResponse);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

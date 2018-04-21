@@ -36,9 +36,20 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     private RecyclerView recyclerView;
     private TextView noInternetTextView;
     private SwipeRefreshLayout swipeLayout;
+    private MovieReview movieReview;
 
 
     public FragmentReviews() {
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        if (movieReview != null) {
+            outState.putParcelable(getString(R.string.saved_review), movieReview);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Nullable
@@ -46,9 +57,9 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(
-                R.layout.fragment_detail_movie_reviews, container, false);
+                R.layout.fragment_detail_movie_recyclerview, container, false);
 
-        recyclerView = view.findViewById(R.id.rvReviews);
+        recyclerView = view.findViewById(R.id.rv);
         swipeLayout = view.findViewById(R.id.swipe_layout);
         noInternetTextView = view.findViewById(R.id.tv_no_internet);
         noInternetTextView.setVisibility(View.INVISIBLE);
@@ -60,14 +71,13 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
 
         Bundle arguments = getArguments();
         if (arguments != null && arguments.getParcelable(getString(R.string.intent_movie_desc)) != null) {
-            Log.d(LOG_TAG, "onCreateView review not null");
             movieObject = getArguments().getParcelable(getString(R.string.intent_movie_desc));
         }
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshItems();
+                requestItems();
             }
         });
 
@@ -77,11 +87,19 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshItems();
+
+        if (savedInstanceState != null) {
+            Log.d(LOG_TAG,"Load saved reviews");
+            movieReview = savedInstanceState.getParcelable(getString(R.string.saved_review));
+            updateReviews(movieReview);
+        } else {
+            Log.d(LOG_TAG,"Go to internet to fetch reviews");
+            requestItems();
+        }
     }
 
 
-    private void refreshItems() {
+    private void requestItems() {
         request((getString(R.string.url_base) + movieObject.getId() + "/reviews"
                 + getString(R.string.api_key_tag) + getString(R.string.api_key)));
         swipeLayout.setRefreshing(false);
@@ -90,13 +108,17 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     public void putArguments(MovieReview movieReview) {
 
         if (movieReview != null) {
-            if (movieReview.getResults().size()==0){
+            if (movieReview.getResults().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_reviews));
                 noInternetTextView.setVisibility(View.VISIBLE);
             }
-            adapter.update(movieReview.getResults());
-
+            updateReviews(movieReview);
         }
+    }
+
+
+    private void updateReviews(MovieReview reviews) {
+        adapter.update(reviews.getResults());
     }
 
     public void request(String url) {
@@ -119,7 +141,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
             public void onResponse(Call call, final Response response) throws IOException {
                 String bodyResponse = response.body().string();
 
-                final MovieReview movieReview = Utils.parseReviewsJSON(bodyResponse);
+                movieReview = Utils.parseReviewsJSON(bodyResponse);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

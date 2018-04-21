@@ -10,6 +10,8 @@
     <string name="api_key" translatable="false">9ed28153cde79670520a66bf9f912e2f</string>
     <string name="intent_movie_object" translatable="false">MovieObjectIntent</string>
     <string name="intent_movie_desc" translatable="false">MovieDescription</string>
+    <string name="saved_review" translatable="false">saved_review</string>
+    <string name="saved_trailers" translatable="false">saved_trailers</string>
     <string name="spinner_position" translatable="false">SpinnerPosition</string>
     <string name="divide_ten" translatable="false">\u0020/ 10</string>
 </resources>
