@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d(LOG_TAG,"SaveInstance: "+adapter.getMovies());
+        Log.d(LOG_TAG, "SaveInstance: " + adapter.getMovies());
         outState.putParcelableArrayList(SAVED_LIST, adapter.getMovies());
         super.onSaveInstanceState(outState);
     }
@@ -70,12 +70,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             Log.d(LOG_TAG, "On Restore");
             infoSaved = true;
             ArrayList<MovieObject> items = savedInstanceState.getParcelableArrayList(SAVED_LIST);
-            if (items!=null) {
-                Log.d(LOG_TAG, "Restore: " + items.toString());
-                adapter.update(items);
-            }else{
-                Log.d(LOG_TAG,"items are null");
-            }
+            adapter.update(items);
         }
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -134,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     private void refreshItems() {
 
-        if (infoSaved ==false) {
+        if (!infoSaved) {
             if (Utils.LoadPreferencesInt(MainActivity.this, getString(R.string.spinner_position), 0) == 3) {
                 fetchFavoriteMovies();
             } else {
@@ -146,10 +141,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 }
             }
 
-        }else{
-            Log.d(LOG_TAG,"RefreshItems: "+infoSaved);
+        } else {
             infoSaved = false;
         }
+
         swipeLayout.setRefreshing(false);
     }
 
@@ -239,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 movieObjects.add(movie);
             }
 
+            noInternetTextView.setVisibility(View.INVISIBLE);
             adapter.update(movieObjects);
             cursor.close();
         }
