@@ -90,11 +90,9 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "Load saved reviews");
             movieReview = savedInstanceState.getParcelable(getString(R.string.saved_review));
             updateReviews(movieReview);
         } else {
-            Log.d(LOG_TAG, "Go to internet to fetch reviews");
             requestItems();
         }
     }
@@ -117,7 +115,7 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
             if (movieReview.getResults() == null || movieReview.getResults().size() == 0) {
                 noInternetTextView.setText(getString(R.string.no_reviews));
                 noInternetTextView.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 updateReviews(movieReview);
             }
         }
@@ -135,7 +133,6 @@ public class FragmentReviews extends Fragment implements ReviewAdapter.ListItemC
     }
 
     public void request(String url) {
-        Log.d(LOG_TAG, "New petition to: " + url);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 

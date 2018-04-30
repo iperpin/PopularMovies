@@ -71,7 +71,6 @@ public class FragmentDescription extends Fragment {
             movieId = movieObject.getId();
             isInFavorites = checkIfInsideDatabase(movieId);
 
-            Log.d(LOG_TAG, "Is in DB: " + isInFavorites);
             if (isInFavorites) {
                 fabButton.setImageResource(R.drawable.star_red);
             } else {

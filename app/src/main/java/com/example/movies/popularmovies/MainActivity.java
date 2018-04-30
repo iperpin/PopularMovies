@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d(LOG_TAG, "SaveInstance: " + adapter.getMovies());
         outState.putParcelableArrayList(SAVED_LIST, adapter.getMovies());
         super.onSaveInstanceState(outState);
     }
@@ -67,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         adapter.setClickListener(this);
 
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "On Restore");
             infoSaved = true;
             ArrayList<MovieObject> items = savedInstanceState.getParcelableArrayList(SAVED_LIST);
             adapter.update(items);
@@ -81,15 +79,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         });
     }
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //refreshItems();
-    }
-
     public void requestMovies(String url) {
-        Log.d(LOG_TAG, "New petition to: " + url);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
@@ -121,7 +111,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     @Override
     public void onListItemClick(int clickedItemIndex, MovieObject movie) {
-        Log.d(LOG_TAG, movie.toString());
         Intent intent = new Intent(MainActivity.this, DetailMovieActivity.class);
         intent.putExtra(getString(R.string.intent_movie_object), movie);
         startActivity(intent);
@@ -168,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Utils.savePrefsInt(MainActivity.this, getString(R.string.spinner_position), position);
-                Log.d(LOG_TAG, "Item Selected");
                 refreshItems();
             }
 
@@ -210,9 +198,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         );
 
         if (cursor != null) {
-            if (cursor.getCount() == 0) {
-            }
-            Log.d(LOG_TAG, "Size= " + cursor.getCount());
 
             List<MovieObject> movieObjects = new ArrayList<>();
 

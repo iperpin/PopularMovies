@@ -93,11 +93,9 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            Log.d(LOG_TAG, "Load saved trailers");
             movieTrailer = savedInstanceState.getParcelable(getString(R.string.saved_trailers));
             updateTrailers(movieTrailer);
         } else {
-            Log.d(LOG_TAG, "Go to internet to fetch trailers");
             requestItems();
         }
     }
@@ -135,7 +133,6 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
     }
 
     public void request(String url) {
-        Log.d(LOG_TAG, "New petition to: " + url);
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
@@ -159,7 +156,6 @@ public class FragmentTrailers extends Fragment implements TrailersAdapter.ListIt
                     @Override
                     public void run() {
                         noInternetTextView.setVisibility(View.INVISIBLE);
-                        Log.d(LOG_TAG, movieTrailer.toString());
                         putArguments(movieTrailer);
                     }
                 });
