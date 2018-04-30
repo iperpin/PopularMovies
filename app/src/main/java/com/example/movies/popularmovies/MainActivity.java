@@ -40,12 +40,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     private TextView noInternetTextView;
     private SwipeRefreshLayout swipeLayout;
     private String SAVED_LIST = "saved_list";
+    private boolean infoSaved = false;
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        Log.d(LOG_TAG, "Saved position");
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(LOG_TAG,"SaveInstance: "+adapter.getMovies());
         outState.putParcelableArrayList(SAVED_LIST, adapter.getMovies());
-        super.onSaveInstanceState(outState, outPersistentState);
+        super.onSaveInstanceState(outState);
     }
 
 
@@ -67,8 +68,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         if (savedInstanceState != null) {
             Log.d(LOG_TAG, "On Restore");
+            infoSaved = true;
             ArrayList<MovieObject> items = savedInstanceState.getParcelableArrayList(SAVED_LIST);
-            adapter.update(items);
+            if (items!=null) {
+                Log.d(LOG_TAG, "Restore: " + items.toString());
+                adapter.update(items);
+            }else{
+                Log.d(LOG_TAG,"items are null");
+            }
         }
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -127,15 +134,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     private void refreshItems() {
 
-        if (Utils.LoadPreferencesInt(MainActivity.this, getString(R.string.spinner_position), 0) == 3) {
-            fetchFavoriteMovies();
-        } else {
-            if (Utils.isNetworkAvailable(this)) {
-                requestMovies(getString(R.string.url_base) + Utils.getUrlSpinnerChoice(MainActivity.this)
-                        + getString(R.string.api_key_tag) + BuildConfig.MY_MOVIE_API_KEY);
+        if (infoSaved ==false) {
+            if (Utils.LoadPreferencesInt(MainActivity.this, getString(R.string.spinner_position), 0) == 3) {
+                fetchFavoriteMovies();
             } else {
-                setNoInternetTextView();
+                if (Utils.isNetworkAvailable(this)) {
+                    requestMovies(getString(R.string.url_base) + Utils.getUrlSpinnerChoice(MainActivity.this)
+                            + getString(R.string.api_key_tag) + BuildConfig.MY_MOVIE_API_KEY);
+                } else {
+                    setNoInternetTextView();
+                }
             }
+
+        }else{
+            Log.d(LOG_TAG,"RefreshItems: "+infoSaved);
+            infoSaved = false;
         }
         swipeLayout.setRefreshing(false);
     }
@@ -160,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Utils.savePrefsInt(MainActivity.this, getString(R.string.spinner_position), position);
-                Log.d(LOG_TAG,"Item Selected");
+                Log.d(LOG_TAG, "Item Selected");
                 refreshItems();
             }
 
