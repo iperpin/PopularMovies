@@ -20,7 +20,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static final String LOG_TAG = "MovieAdapter";
     private ListItemClickListener mOnClickListener;
-    private List<MovieObject> movies;
+    private ArrayList<MovieObject> movies;
 
     public MovieAdapter() {
         movies = new ArrayList<>();
@@ -71,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             movies.addAll(items);
             notifyDataSetChanged();
         }
-        if (items.size() == 0) {
+        if (items != null && items.size() == 0) {
             movies.clear();
             notifyDataSetChanged();
         }
@@ -82,7 +82,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
-    public List<MovieObject> getMovies() {
+    public ArrayList<MovieObject> getMovies() {
         return movies;
     }
 

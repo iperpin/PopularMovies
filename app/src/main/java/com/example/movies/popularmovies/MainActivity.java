@@ -3,6 +3,8 @@ package com.example.movies.popularmovies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,11 +35,19 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener {
 
     private static final String LOG_TAG = "MainActivity";
-    private static final int NUM_COLUMNS_RECYCLERVIEW = 2;
     private MovieAdapter adapter;
     private RecyclerView recyclerView;
     private TextView noInternetTextView;
     private SwipeRefreshLayout swipeLayout;
+    private String SAVED_LIST = "saved_list";
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        Log.d(LOG_TAG, "Saved position");
+        outState.putParcelableArrayList(SAVED_LIST, adapter.getMovies());
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,10 +60,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         noInternetTextView.setVisibility(View.INVISIBLE);
 
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, NUM_COLUMNS_RECYCLERVIEW));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, Utils.numberOfColumns(this)));
         adapter = new MovieAdapter();
         recyclerView.setAdapter(adapter);
         adapter.setClickListener(this);
+
+        if (savedInstanceState != null) {
+            Log.d(LOG_TAG, "On Restore");
+            ArrayList<MovieObject> items = savedInstanceState.getParcelableArrayList(SAVED_LIST);
+            adapter.update(items);
+        }
 
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -67,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     @Override
     protected void onResume() {
         super.onResume();
-        refreshItems();
+        //refreshItems();
     }
 
     public void requestMovies(String url) {
@@ -144,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 Utils.savePrefsInt(MainActivity.this, getString(R.string.spinner_position), position);
+                Log.d(LOG_TAG,"Item Selected");
                 refreshItems();
             }
 
